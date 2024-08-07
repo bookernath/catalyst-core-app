@@ -1,0 +1,41 @@
+name: Shuck app from monorepo and commit changes
+
+on:
+    workflow_dispatch:
+    schedule:
+      # * is a special character in YAML so you have to quote this string
+    - cron:  '0 0 * * *'    
+jobs:
+  build-app:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Delete all files and folders
+      run: rm -rf *
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install create-catalyst-storefront CLI
+      run: npm i -g @bigcommerce/create-catalyst
+
+    - name: Install Catalyst Next.js app
+      run:  create-catalyst --project-name catalyst --project-dir . --store-hash ${{ secrets.bc_store_hash }} --access-token ${{ secrets.bc_access_token }} --channel-id 1 --customer-impersonation-token ${{ secrets.bc_customer_impersonation_token }}
+
+    - name: Move to root
+      run: mv -f catalyst/* .
+
+    - name: Remove catalyst folder
+      run: rm -rf catalyst
+    
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+        message: Automated update using create-catalyst-storefront CLI
+        committer_name: GitHub Actions
+        committer_email: actions@github.com
