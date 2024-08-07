@@ -194,3 +194,5 @@ export const GET = async (request: NextRequest) => {
 
   return clonedResponse;
 };
+
+export const runtime = 'edge';
