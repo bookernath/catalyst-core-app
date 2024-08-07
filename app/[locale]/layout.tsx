@@ -77,3 +77,5 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
     </html>
   );
 }
+
+export const runtime = 'edge';
