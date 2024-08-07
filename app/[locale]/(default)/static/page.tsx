@@ -10,3 +10,4 @@ export function generateStaticParams() {
 
 export const dynamic = 'force-static';
 export const revalidate = 600;
+export const runtime = 'edge';
