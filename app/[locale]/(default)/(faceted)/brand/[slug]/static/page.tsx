@@ -11,6 +11,8 @@ import BrandPage from '../page';
 
 export default BrandPage;
 
+export { generateMetadata } from '../page';
+
 const BrandsQuery = graphql(`
   query BrandsQuery($first: Int, $entityIds: [Int!]) {
     site {
@@ -51,4 +53,3 @@ export async function generateStaticParams() {
 
 export const dynamic = 'force-static';
 export const revalidate = 600;
-export const runtime = 'edge';

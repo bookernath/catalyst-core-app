@@ -12,6 +12,8 @@ import CategoryPage from '../page';
 
 export default CategoryPage;
 
+export { generateMetadata } from '../page';
+
 const CategoryTreeQuery = graphql(
   `
     query CategoryTreeQuery($categoryId: Int) {
@@ -60,4 +62,3 @@ export async function generateStaticParams() {
 
 export const dynamic = 'force-static';
 export const revalidate = 600;
-export const runtime = 'edge';

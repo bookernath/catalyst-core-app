@@ -1,5 +1,3 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider, useMessages } from 'next-intl';
@@ -26,6 +24,11 @@ const RootLayoutMetadataQuery = graphql(`
     site {
       settings {
         storeName
+        seo {
+          pageTitle
+          metaDescription
+          metaKeywords
+        }
       }
     }
   }
@@ -37,13 +40,17 @@ export async function generateMetadata(): Promise<Metadata> {
     fetchOptions: { next: { revalidate } },
   });
 
-  const title = data.site.settings?.storeName ?? '';
+  const storeName = data.site.settings?.storeName ?? '';
+
+  const { pageTitle, metaDescription, metaKeywords } = data.site.settings?.seo || {};
 
   return {
     title: {
-      template: `${title} - %s`,
-      default: title,
+      template: `%s - ${storeName}`,
+      default: pageTitle || storeName,
     },
+    description: metaDescription,
+    keywords: metaKeywords ? metaKeywords.split(',') : null,
     other: {
       platform: 'bigcommerce.catalyst',
       build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
@@ -71,8 +78,6 @@ export default function RootLayout({ children, params: { locale } }: RootLayoutP
         <NextIntlClientProvider locale={locale} messages={{ Providers: messages.Providers ?? {} }}>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   );
